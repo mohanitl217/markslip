@@ -13,7 +13,7 @@
 const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwLs3sIovpf14q4TbzHFmIf86Eq9hbpXUPH1_3y34mki8bamEIa4glagK-VWUMHgZ7_/exec';
 
 // For local testing, you can use this mock URL (will show configuration instructions)
-const IS_DEVELOPMENT = BACKEND_URL.includes('YOUR_SCRIPT_ID');
+const IS_DEVELOPMENT = BACKEND_URL.includes('https://script.google.com/macros/s/AKfycbwLs3sIovpf14q4TbzHFmIf86Eq9hbpXUPH1_3y34mki8bamEIa4glagK-VWUMHgZ7_/exec');
 
 // ==================== CONFIGURATION INSTRUCTIONS ====================
 if (IS_DEVELOPMENT) {
