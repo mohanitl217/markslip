@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Enhanced Markslip Entry System with Smart Data Loading</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="msapplication-navbutton-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-title" content="Smart Markslip System">
+    
+    <!-- Prevent mobile refresh -->
+    <meta name="format-detection" content="telephone=no">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="light">
+    <!-- App Background -->
+    <div class="app-background"></div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-container">
+            <div class="loading-dots">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+            <div class="loading-text" id="loadingText">Initializing Smart Markslip System...</div>
+            <div class="loading-progress">
+                <div class="loading-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auto-save Indicator -->
+    <div class="auto-save-indicator" id="autoSaveIndicator">
+        <div class="auto-save-spinner" id="autoSaveSpinner"></div>
+        <span id="autoSaveText">Auto-saving...</span>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="app-logo">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="app-title">
+                        <h1>Enhanced Markslip Entry System</h1>
+                        <p class="app-subtitle">Smart Data Loading & Ultra-Fast Auto-Check</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                        <i class="fas fa-moon" id="themeIcon"></i>
+                    </button>
+                    <div class="performance-indicator" id="performanceIndicator">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span id="performanceText">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Configuration Banner (shown when backend is not configured) -->
+        <div class="config-banner" id="configBanner" style="display: none;">
+            <div class="config-banner-content">
+                <div class="config-banner-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="config-banner-text">
+                    <strong>Backend Configuration Required</strong>
+                    <p>Connect your Google Apps Script backend to enable full functionality.</p>
+                </div>
+                <button class="btn btn-sm btn-primary" onclick="showConfigurationModal()">
+                    <i class="fas fa-cog"></i> Setup Instructions
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Configuration Panel -->
+            <section class="config-panel" id="configPanel">
+                <div class="panel-header">
+                    <h2>
+                        <i class="fas fa-cog"></i>
+                        Exam Configuration
+                    </h2>
+                    <div class="panel-subtitle">
+                        Configure your exam details and enable smart features
+                    </div>
+                </div>
+
+                <!-- Auto-save Toggle -->
+                <div class="auto-save-toggle" id="autoSaveToggle">
+                    <div class="toggle-switch" id="toggleSwitch">
+                        <div class="toggle-slider"></div>
+                    </div>
+                    <div class="toggle-info">
+                        <div class="toggle-label">Smart Auto-Save</div>
+                        <div class="toggle-description">Automatically saves your progress every 30 seconds</div>
+                    </div>
+                </div>
+
+                <!-- Configuration Form -->
+                <div class="config-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="classSelect">Class</label>
+                            <select id="classSelect" class="form-control" required>
+                                <option value="">Select Class</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sessionSelect">Academic Session</label>
+                            <select id="sessionSelect" class="form-control" required>
+                                <option value="">Select Session</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="examSelect">Exam Type</label>
+                            <select id="examSelect" class="form-control" required>
+                                <option value="">Select Exam</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="classTeacherSelect">Class Teacher</label>
+                            <select id="classTeacherSelect" class="form-control" required>
+                                <option value="">Select Teacher</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Smart Check Button -->
+                    <div class="form-actions">
+                        <button class="btn btn-primary btn-large" id="smartCheckBtn">
+                            <i class="fas fa-bolt"></i>
+                            <span>Smart Ultra-Fast Check</span>
+                            <div class="btn-loading hidden">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Smart Check Status -->
+                    <div class="smart-check-status hidden" id="smartCheckStatus">
+                        <i class="fas fa-info-circle" id="smartCheckIcon"></i>
+                        <span id="smartCheckText">Checking...</span>
+                        <div class="performance-badge" id="smartCheckPerformance">0ms</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Panel -->
+            <section class="data-panel hidden" id="dataPanel">
+                <div class="panel-header">
+                    <h2>
+                        <i class="fas fa-users"></i>
+                        Markslip Data Entry
+                        <span class="data-source-indicator" id="dataSourceIndicator">
+                            <i class="fas fa-database"></i>
+                            <span>Main Spreadsheet</span>
+                        </span>
+                    </h2>
+                    <div class="panel-subtitle" id="dataPanelSubtitle">
+                        Enter marks for your students efficiently
+                    </div>
+                </div>
+
+                <!-- Subject Tabs -->
+                <div class="subject-tabs" id="subjectTabs">
+                    <!-- Subject tabs will be populated dynamically -->
+                </div>
+
+                <!-- Subject Content -->
+                <div class="subject-content" id="subjectContent">
+                    <!-- Subject-specific forms will be populated here -->
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-success" id="saveMarkslipBtn">
+                        <i class="fas fa-save"></i>
+                        Save Markslip
+                    </button>
+                    <button class="btn btn-info" id="generateMarkslipBtn">
+                        <i class="fas fa-file-excel"></i>
+                        Generate Excel
+                    </button>
+                    <button class="btn btn-secondary" id="viewMarkslipBtn" style="display: none;">
+                        <i class="fas fa-eye"></i>
+                        View Markslip
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Panel -->
+            <section class="results-panel hidden" id="resultsPanel">
+                <div class="panel-header">
+                    <h2>
+                        <i class="fas fa-chart-bar"></i>
+                        Results Overview
+                    </h2>
+                </div>
+                <div class="results-content" id="resultsContent">
+                    <!-- Results will be populated here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Modal for Markslip View -->
+    <div class="modal-overlay hidden" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Markslip Details</h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
